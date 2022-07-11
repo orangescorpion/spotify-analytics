@@ -12,7 +12,7 @@ import tzlocal
 import os
 
 #Location of json data
-raw_path = "C:/Users/Olivia/Documents/DE Projects/Spotify API/Data Files/raw_data/json/"
+raw_path = "C:/Users/OrangeScorpion/Documents/json/"
 
 # Where the metadata and streams will be saved
 csv_path = "C:/Users/OrangeScorpion/Documents/metadata/"
@@ -22,17 +22,13 @@ local_timezone = tzlocal.get_localzone() # get pytz timezone
 
 # Get the name of the most recent data file that was saved (based off the naming convention I've used.) Otherwise specify a file name
 path, dirs, files = next(os.walk(raw_path))
-file_count = len(files)
-file = "sample"+str(file_count)+".json"
+file = "sample"+str(len(files))+".json"
 
 # Open json file
 f = open(raw_path+file)
 results = json.load(f)
 
-#get list of tracks listened to (streams)
-items = results['items'] #track list
-
-#get metadata
+### Metadata
 next2 = results['next'] #next
 href = results['href'] #href
 limit = results['limit'] #size limit on api call
@@ -56,6 +52,9 @@ dataframe = df(data, columns = ['href', 'next', 'limit',
                                 'time_before', 'time_after'])
 
 df.to_csv(dataframe, csv_path+file+"_metadata.csv")
+
+### Streaming Data
+items = results['items'] #track list
 
 # create normalised json for streams and save to CSV
 normalised = pd.json_normalize(items)
